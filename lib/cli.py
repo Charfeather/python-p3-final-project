@@ -108,7 +108,7 @@ def delete_sub():
             Parent.parent_names.remove(sub_choice)
             for a in Parent.all_parents:
                 if a.name == sub_choice:
-                    a.delete()
+                    a.update_delete()
                     Parent.all_parents.remove(a)
                     print(f'{a.name} has been deleted')
         elif sub_choice in Child.name_list:

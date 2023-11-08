@@ -9,6 +9,7 @@ class Parent:
     def __init__(self,name,bio):
         self.name=name
         self._bio=bio
+        self.deleted=0
         Parent.all_parents.append(self)
         Parent.parent_names.append(self.name)
 
@@ -50,7 +51,8 @@ class Parent:
         create table if not exists parents(
             id INTEGER PRIMARY KEY,
             name TEXT,
-            bio TEXT)
+            bio TEXT,
+            deleted INTEGER)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -71,10 +73,10 @@ class Parent:
     
     def save(self):
         sql="""
-           insert into parents(name,bio)
-           values(?,?)
+           insert into parents(name,bio,deleted)
+           values(?,?,?)
         """
-        CURSOR.execute(sql,(self.name,self.bio))
+        CURSOR.execute(sql,(self.name,self.bio,self.deleted))
         CONN.commit()
         self.id=CURSOR.lastrowid
         type(self).all[self.id]=self
@@ -85,8 +87,9 @@ class Parent:
         if parents:
             parents.name=row[1]
             parents.bio=row[2]
+            parents.deleted=row[3]
         else:
-            parents = cls(row[1],row[2])
+            parents = cls(row[1],row[2],row[3])
             parents.id=row[0]
             cls.all[parents.id]=parents
         return parents.name
@@ -96,6 +99,7 @@ class Parent:
         sql="""
            select * 
            from parents
+           where deleted = 0
         """
         rows=CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row)for row in rows]
@@ -127,6 +131,15 @@ class Parent:
         """
         row=CURSOR.execute(sql,(id,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    def update_delete(self):
+        sql="""
+           UPDATE parents
+           SET deleted = 1
+           WHERE id = ? AND deleted = 0
+        """
+        row=CURSOR.execute(sql,(self.id,))
+        CONN.commit()
 
     
 
