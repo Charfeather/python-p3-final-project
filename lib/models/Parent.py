@@ -24,7 +24,10 @@ class Parent:
     # CLI can only read Print
     def my_children(self):
         child=[a.name for a in Child.spawn if a.father==self]
-        print(f'{self.name}\'s children are {child}')
+        if child == []:
+            print(f'{self.name} has no children.')
+        else:    
+            print(f'{self.name}\'s children are {child}')
 
     def get_name(self):
         return self._name
