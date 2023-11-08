@@ -58,12 +58,17 @@ def list_sub():
                 if a.name == sub_choice:
                     print('[BIO]')
                     print(a.bio)
+                    print('[CHILDREN]')
+                    a.my_children()
+                    
         elif sub_choice in Child.name_list:
             for a in Child.spawn:
                 bio=''
                 if a.name == sub_choice:
                     print('[BIO]')
                     print(a.bio)
+                    print('[PARENT]')
+                    print(f'{a.name} is a child of {a.father.name}.')
         elif sub_choice == "back":
             break
         else:
@@ -76,6 +81,9 @@ def create_sub():
         new_name = input("> ")
 
         if new_name == "back":
+            break
+        elif new_name in Parent.parent_names or Child.spawn:
+            print(f"[{new_name} already exists]")
             break
         else:
             new_bio = input("Enter the new god's bio: ")
