@@ -6,6 +6,8 @@ class Parent:
     parent_names=[]
     all_parents=[]
     all={}
+    deleted_parents=[]
+    deleted_parents_name=[]
     def __init__(self,name,bio):
         self.name=name
         self._bio=bio
@@ -141,6 +143,20 @@ class Parent:
            SET deleted = 1
            WHERE id = ? AND deleted = 0
         """
+        Parent.deleted_parents.append(self)
+        Parent.deleted_parents_name.append(self.name)
+        row=CURSOR.execute(sql,(self.id,))
+        CONN.commit()
+
+    def restore_delete(self):
+        sql="""
+           UPDATE parents
+           SET deleted = 0
+           WHERE id = ? AND deleted = 1
+        """
+        Parent.deleted_parents.remove(self)
+        Parent.deleted_parents_name.remove(self.name)
+        Parent.parent_names.append(self.name)
         row=CURSOR.execute(sql,(self.id,))
         CONN.commit()
 

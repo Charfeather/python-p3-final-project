@@ -88,6 +88,12 @@ def create_sub():
         if new_name in Child.name_list:
             print(f"[{new_name} already exists]")
             break
+        if new_name in Parent.deleted_parents_name:
+            print(f"[{new_name} was deleted but has been restored]")
+            for a in Parent.deleted_parents:
+                if a.name == new_name:
+                    a.restore_delete()
+            break
         else:
             new_bio = input("Enter the new god's bio: ")
             if new_bio == "back":
