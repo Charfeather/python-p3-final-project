@@ -82,7 +82,10 @@ def create_sub():
 
         if new_name == "back":
             break
-        elif new_name in Parent.parent_names or Child.spawn:
+        if new_name in Parent.parent_names:
+            print(f"[{new_name} already exists]")
+            break
+        if new_name in Child.name_list:
             print(f"[{new_name} already exists]")
             break
         else:
