@@ -24,12 +24,8 @@ class Parent:
         return f"<{self.name},{self.bio}>"
 
     # CLI can only read Print
-    def my_children(self):
-        child=[a.name for a in Child.spawn if a.father==self]
-        if child == []:
-            print(f'{self.name} has no children.')
-        else:    
-            print(f'{self.name}\'s children are {child}')
+    #add the below to the cli
+    
 
     def get_name(self):
         return self._name
@@ -295,3 +291,18 @@ class Child:
         row=CURSOR.execute(sql,(father,)).fetchall()
         #when in cli this should print "Name must be a string" as an error
         return [cls.instance_from_db(row)for row in rows]
+    
+    def my_parent(self):
+        sql="""
+           select *
+           from parents
+           where name = ?
+        """
+        father= f'{self.father.name}'
+        rows=CURSOR.execute(sql,(father,)).fetchall()
+        child = [Parent.instance_from_db(row)for row in rows]
+
+        if child == []:
+            print(f'{self.name}\'s has no parent, how did you do that?')
+        else:    
+            print(f'{self.name}\'s Parent is {child}.')

@@ -68,7 +68,7 @@ def list_sub():
                     print('[BIO]')
                     print(a.bio)
                     print('[PARENT]')
-                    print(f'{a.name} is a child of {a.father.name}.')
+                    a.my_parent()
         elif sub_choice == "back":
             break
         else:
