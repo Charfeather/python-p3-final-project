@@ -83,7 +83,8 @@ def list_sub():
                     print('[BIO]')
                     print(a.bio)
                     print('[CHILDREN]')
-                    a.my_children()
+                    print(f'{a.name}\'s children are {a.get_children()}')
+                    a.get_children()
                     
         elif sub_choice in Child.name_list:
             for a in Child.spawn:
