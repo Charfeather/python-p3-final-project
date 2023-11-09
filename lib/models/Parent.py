@@ -6,9 +6,12 @@ class Parent:
     parent_names=[]
     all_parents=[]
     all={}
+    deleted_parents=[]
+    deleted_parents_name=[]
     def __init__(self,name,bio):
         self.name=name
         self._bio=bio
+        self.deleted=0
         Parent.all_parents.append(self)
         Parent.parent_names.append(self.name)
 
@@ -21,12 +24,8 @@ class Parent:
         return f"<{self.name},{self.bio}>"
 
     # CLI can only read Print
-    def my_children(self):
-        child=[a.name for a in Child.spawn if a.father==self]
-        if child == []:
-            print(f'{self.name} has no children.')
-        else:    
-            print(f'{self.name}\'s children are {child}')
+    #add the below to the cli
+    
 
     def get_name(self):
         return self._name
@@ -53,7 +52,8 @@ class Parent:
         create table if not exists parents(
             id INTEGER PRIMARY KEY,
             name TEXT,
-            bio TEXT)
+            bio TEXT,
+            deleted INTEGER)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -74,10 +74,10 @@ class Parent:
     
     def save(self):
         sql="""
-           insert into parents(name,bio)
-           values(?,?)
+           insert into parents(name,bio,deleted)
+           values(?,?,?)
         """
-        CURSOR.execute(sql,(self.name,self.bio))
+        CURSOR.execute(sql,(self.name,self.bio,self.deleted))
         CONN.commit()
         self.id=CURSOR.lastrowid
         type(self).all[self.id]=self
@@ -88,8 +88,9 @@ class Parent:
         if parents:
             parents.name=row[1]
             parents.bio=row[2]
+            parents.deleted=row[3]
         else:
-            parents = cls(row[1],row[2])
+            parents = cls(row[1],row[2],row[3])
             parents.id=row[0]
             cls.all[parents.id]=parents
         return parents.name
@@ -99,6 +100,7 @@ class Parent:
         sql="""
            select * 
            from parents
+           where deleted = 0
         """
         rows=CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row)for row in rows]
@@ -130,6 +132,30 @@ class Parent:
         """
         row=CURSOR.execute(sql,(id,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    def update_delete(self):
+        sql="""
+           UPDATE parents
+           SET deleted = 1
+           WHERE id = ? AND deleted = 0
+        """
+        Parent.deleted_parents.append(self)
+        Parent.deleted_parents_name.append(self.name)
+        Parent.parent_names.remove(self.name)
+        row=CURSOR.execute(sql,(self.id,))
+        CONN.commit()
+
+    def restore_delete(self):
+        sql="""
+           UPDATE parents
+           SET deleted = 0
+           WHERE id = ? AND deleted = 1
+        """
+        Parent.deleted_parents.remove(self)
+        Parent.deleted_parents_name.remove(self.name)
+        Parent.parent_names.append(self.name)
+        row=CURSOR.execute(sql,(self.id,))
+        CONN.commit()
 
     
 
@@ -266,3 +292,18 @@ class Child:
         row=CURSOR.execute(sql,(father,)).fetchall()
         #when in cli this should print "Name must be a string" as an error
         return [cls.instance_from_db(row)for row in rows]
+    
+    def my_parent(self):
+        sql="""
+           select *
+           from parents
+           where name = ?
+        """
+        father= f'{self.father.name}'
+        rows=CURSOR.execute(sql,(father,)).fetchall()
+        child = [Parent.instance_from_db(row)for row in rows]
+
+        if child == []:
+            print(f'{self.name}\'s has no parent, how did you do that?')
+        else:    
+            print(f'{self.name}\'s Parent is {child}.')

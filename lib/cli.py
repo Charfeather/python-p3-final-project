@@ -83,7 +83,8 @@ def list_sub():
                     print('[BIO]')
                     print(a.bio)
                     print('[CHILDREN]')
-                    a.my_children()
+                    print(f'{a.name}\'s children are {a.get_children()}')
+                    a.get_children()
                     
         elif sub_choice in Child.name_list:
             for a in Child.spawn:
@@ -92,7 +93,7 @@ def list_sub():
                     print('[BIO]')
                     print(a.bio)
                     print('[PARENT]')
-                    print(f'{a.name} is a child of {a.father.name}.')
+                    a.my_parent()
         elif sub_choice == "back":
             break
         else:
@@ -111,6 +112,12 @@ def create_sub():
             break
         if new_name in Child.name_list:
             print(f"[{new_name} already exists]")
+            break
+        if new_name in Parent.deleted_parents_name:
+            print(f"[{new_name} was deleted but has been restored]")
+            for a in Parent.deleted_parents:
+                if a.name == new_name:
+                    a.restore_delete()
             break
         else:
             new_bio = input("Enter the new god's bio: ")
@@ -143,7 +150,7 @@ def delete_sub():
             Parent.parent_names.remove(sub_choice)
             for a in Parent.all_parents:
                 if a.name == sub_choice:
-                    a.delete()
+                    a.update_delete()
                     Parent.all_parents.remove(a)
                     print(f'{a.name} has been deleted')
         elif sub_choice in Child.name_list:
