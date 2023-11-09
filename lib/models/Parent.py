@@ -141,6 +141,7 @@ class Parent:
         """
         Parent.deleted_parents.append(self)
         Parent.deleted_parents_name.append(self.name)
+        Parent.parent_names.remove(self.name)
         row=CURSOR.execute(sql,(self.id,))
         CONN.commit()
 
