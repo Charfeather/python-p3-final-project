@@ -68,10 +68,12 @@ def menu():
     print("2. Add a God")
     print("3. Delete a god")
 
+gods=Parent.get_all_parents()+Child.get_all_children()
+
 def list_sub():
     while True:
         list_sub_menu()
-        print(f'{Parent.get_all_parents()+Child.get_all_children()}')
+        print(f'{gods}')
         sub_choice = input("> ")
         if sub_choice in Parent.parent_names:
             for a in Parent.all_parents:
