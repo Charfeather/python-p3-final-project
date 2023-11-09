@@ -139,9 +139,9 @@ class Parent:
            SET deleted = 1
            WHERE id = ? AND deleted = 0
         """
+        #Parent.parent_names.remove(self.name)
         Parent.deleted_parents.append(self)
         Parent.deleted_parents_name.append(self.name)
-        Parent.parent_names.remove(self.name)
         row=CURSOR.execute(sql,(self.id,))
         CONN.commit()
 
@@ -154,6 +154,7 @@ class Parent:
         Parent.deleted_parents.remove(self)
         Parent.deleted_parents_name.remove(self.name)
         Parent.parent_names.append(self.name)
+        Parent.all_parents.append(self)
         row=CURSOR.execute(sql,(self.id,))
         CONN.commit()
 

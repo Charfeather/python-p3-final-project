@@ -47,16 +47,14 @@ def main():
         choice = input("> ")
         if choice == "0":
             exit_program()
-        elif choice == "1":
-            print(f'{Parent.get_all_parents()+Child.get_all_children()}')
         
-        elif choice == "2":
+        elif choice == "1":
             list_sub()
         
-        elif choice == "3":
+        elif choice == "2":
             create_sub()
 
-        elif choice == "4":
+        elif choice == "3":
             delete_sub()
 
         else:
@@ -66,10 +64,9 @@ def main():
 def menu():
     print("Please select an option:")
     print("0. Exit the program")
-    print("1. Some useful function")
-    print("2. A list of the Gods")
-    print("3. Add a God")
-    print("4. Delete a god")
+    print("1. A list of the Gods")
+    print("2. Add a God")
+    print("3. Delete a god")
 
 def list_sub():
     while True:
