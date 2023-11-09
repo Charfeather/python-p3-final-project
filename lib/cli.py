@@ -76,15 +76,18 @@ def list_sub():
         sub_choice = input("> ")
         if sub_choice in Parent.get_all_parents():
             for a in Parent.all_parents:
-                bio=''
                 if a.name == sub_choice:
                     print('[BIO]')
                     print(a.bio)
                     print('[CHILDREN]')
-                    print(f'{a.name}\'s children are {a.get_children()}')
-                    a.get_children()
+                    if a.get_children() == []:
+                        print(f'{a.name} doesnt have children')
+                    elif len(a.get_children())==1:
+                        print(f'{a.name} has only 1 child and that child is {a.get_children()}')
+                    else:
+                        print(f'{a.name} has {len(a.get_children())} children and they are {a.get_children()}')
                     
-        elif sub_choice in Child.name_list:
+        elif sub_choice in Child.get_all_children():
             for a in Child.spawn:
                 bio=''
                 if a.name == sub_choice:
@@ -165,18 +168,18 @@ def delete_sub():
 
 def create_sub_menu():
     print('[Options]')
-    print('type back to go back')
-    print('type a new God\'s name to create them')
+    print('type back to go back.')
+    print('type a new God\'s name to create them.')
 
 def delete_sub_menu():
     print('[Options]')
-    print('type back to go back')
-    print('type a God\'s name to delete them')
+    print('type back to go back.')
+    print('type a God\'s name to delete them.')
 
 def list_sub_menu():
     print('[Options]')
-    print('Type back to go back')
-    print('(Type a God\'s name from the names below)')
+    print('Type back to go back.')
+    print('Type a God\'s name from the names in the list to learn more about them.')
 
 
 if __name__ == "__main__":
